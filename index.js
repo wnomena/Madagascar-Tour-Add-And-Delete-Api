@@ -11,8 +11,11 @@ const {ToolSetter} = require("./Presenter/ToolSetter")
 const { ToolClass } = require("./Modes/PosterForTools")
 const {IncludedSetter} = require("./Presenter/IncludedSetter")
 const { AdrenalineSetter } = require("./Presenter/SetterForAdrenaline")
-const DeleteTour = require("./Presenter/DeleteTour")
-const 
+const { DeleteTour } = require("./Presenter/DeleteTour")
+const { UpdateTour } = require("./Presenter/Update/UpdateTour")
+const { UpdateTool } = require("./Presenter/Update/UpdateTool")
+const { UpdateIncluded } = require("./Presenter/Update/UpdateIncluded")
+const { UpdateAdrenaline } = require("./Presenter/Update/UpdateAdrenaline")
 const app = express()
 app.use(express.json())
 app.use(FileUpload({
@@ -42,7 +45,13 @@ sequelize.authenticate()
                         const id = req.query.id
                         DeleteTour(id,(e) => {
                             if(e.status == "ok") return res.json({ status : "ok"  })
-                            else if(e.status == "ko") return res.status(400).json({ status : "ko", message : result.err })
+                            else if(e.status == "ko") return res.status(400).json({ status : "ko", message : e.message })
+                        })
+                    })
+                    .put((req,res) => {
+                        UpdateTour(req.query.id, req.body, (e) => {
+                            const status = e.status === "ok" ? 200 : 400
+                            return res.status(status).json(e)
                         })
                     })
             app.post("/tool",(req,res) => {
@@ -52,6 +61,12 @@ sequelize.authenticate()
                     return res.status(parseInt(status)).json({ status : e.status}) 
                 })
             })
+            app.put("/tool",(req,res) => {
+                UpdateTool(req.query.id, req.body, (e) => {
+                    const status = e.status === "ok" ? 200 : 400
+                    return res.status(status).json(e)
+                })
+            })
             app.post("/included_in_price",(req,res) => {
                 const equipement = req.body
                 IncludedSetter(new ToolClass(undefined,undefined,equipement["content"],equipement["circuit_id"]),(e) => {
@@ -59,11 +74,23 @@ sequelize.authenticate()
                     return res.status(parseInt(status)).json({ status : e.status}) 
                 })
             })
+            app.put("/included_in_price",(req,res) => {
+                UpdateIncluded(req.query.id, req.body, (e) => {
+                    const status = e.status === "ok" ? 200 : 400
+                    return res.status(status).json(e)
+                })
+            })
             app.post("/adrenaline",(req,res) => {
                 const equipement = req.body
                 AdrenalineSetter(new ToolClass(undefined,undefined,equipement["content"],equipement["circuit_id"]),(e) => {
                     const status = e == "ok" ? 200 : 400
                     return res.status(parseInt(status)).json({ status : e.status}) 
+                })
+            })
+            app.put("/adrenaline",(req,res) => {
+                UpdateAdrenaline(req.query.id, req.body, (e) => {
+                    const status = e.status === "ok" ? 200 : 400
+                    return res.status(status).json(e)
                 })
             })
             app.route("/contact")
@@ -105,7 +132,7 @@ sequelize.authenticate()
                         const id = req.query.id
                         UpdateToSeen(id,(e) => {
                             if(e.status == "ok") return res.json({ status : "ok"  })
-                            else if(e.status == "ko") return res.status(400).json({ status : "ko", message : result.err })
+                            else if(e.status == "ko") return res.status(400).json({ status : "ko", message : e.err })
                         })
                     })
         app.listen(port,() => console.log("ça marche"))
