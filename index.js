@@ -2,7 +2,6 @@ const express = require("express")
 const FileUpload = require("express-fileupload")
 const {sequelize, Contact} = require("./Modes/models")
 const {SetNewTour} = require("./Presenter/SetterForTours")
-const { TourModel } = require("./Modes/PostModelForTour")
 const { ResponseType } = require("./Modes/ResponseModel")
 const {GetterForContacts} = require("./Presenter/GetterForContact")
 const { StandardContact } = require("./Modes/PosterForContact")
@@ -32,8 +31,8 @@ sequelize.authenticate()
             .then(() => {
             app.route("/tour")
                     .post((req,res) => {
-                        const Formulaire = req.body
-                        SetNewTour(new TourModel(Formulaire["title"],Formulaire["subtitle"],Formulaire["duration"],Formulaire["difficulty"],Formulaire["price"],Formulaire["image"],Formulaire["description"]),(value) => {
+                        const Formulaire = {...req.body, ...req.files}
+                        SetNewTour(Formulaire,(value) => {
                         const status = value.status == "ok" ? 200 : 400
                         return res.status(parseInt(status)).json({
                             status : value.status,

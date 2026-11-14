@@ -62,7 +62,7 @@ Contact.init({
   number : DataTypes.TEXT,
   begining : DataTypes.DATE,
   number_of_person : {
-    type : DataTypes.NUMBER,
+    type : DataTypes.INTEGER,
     defaultValue : 1
   },
   circuit_id : {
@@ -93,6 +93,10 @@ Contact.init({
     timestamps : false
   })
 
+Contact.getData = function () {
+  
+}
+
 class Equipement extends Model {}
 Equipement.init({
     id : {
@@ -119,6 +123,10 @@ Equipement.init({
   timestamps : false,
 })
 
+Equipement.getData = function () {
+  
+}
+
 class Included extends Model {}
 Included.init({
       id : {
@@ -143,6 +151,10 @@ Included.init({
   tableName : "included_in_price",
   timestamps : false
 })
+
+Included.getData = function () {
+  
+}
 
 class Itineraire extends Model {}
 
@@ -181,6 +193,10 @@ Itineraire.init({
   timestamps : false
 })
 
+Itineraire.getData = function () {
+  
+}
+
 class Adrenaline extends Model {}
 Adrenaline.init({
       id : {
@@ -206,6 +222,9 @@ Adrenaline.init({
   timestamps : false
 })
 
+Adrenaline.getData = function () {
+  
+}
 
 //Les jointure
 /*
